@@ -1,0 +1,15 @@
+button{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border-width: 0px;  
+    margin: 2px;  
+}
+
+.calc-button{
+    width: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}

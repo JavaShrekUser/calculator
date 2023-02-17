@@ -6,9 +6,15 @@ let curr1 = 0;
 let curr2 = 0;
 let tempResult = 0;
 let finished = false;
+let cleaned = false;
 
+const equal = document.querySelector('button.equal');
+equal.addEventListener('click',operate);
 
-const buttons = document.querySelectorAll('button')
+const clear = document.querySelector('button.clear');
+clear.addEventListener('click',clean);
+
+const buttons = document.querySelectorAll('button');
 buttons.forEach(button => {
     button.addEventListener('click',saveKey)  
 });
@@ -16,13 +22,16 @@ buttons.forEach(button => {
 function saveKey(key){
     let currKey = key.target.className
 
-    if(currKey === '+' || currKey === '-' || currKey === '*' || currKey === '/'){
+    if(currKey === '+' || currKey === '-' || currKey === '*' || currKey === '/' || currKey === '%'){
 
-        if(isNaN(parseInt(fullFunc[0]))){           //if lst[0] is not a number, remove it
+        if(isNaN(parseFloat(fullFunc[0]))){           //if lst[0] is not a number, remove it
             fullFunc.pop(); 
         }  
         
-        if(tempString !==''){             
+        if(tempString !=='' && currKey =='%'){
+            tempString = (tempString/100).toFixed(5);
+        }
+        else if(tempString !==''){         
             fullFunc.push(tempString);              //if tempString is not empty, push it to fullFunc and reset tempString
             tempString='';
             calculate(fullFunc);
@@ -38,14 +47,19 @@ function saveKey(key){
             finished = false;
         }
 
-        fullFunc.push(`${currKey}`);
+        if(currKey !== '%'){
+            fullFunc.push(`${currKey}`);
+        }
     }
-    else if(!isNaN(parseInt(currKey))){             //↓ if input a number after the answer, clean the fullFunc
+    else if(!isNaN(parseFloat(currKey))){             //↓ if input a number after the answer, clean the fullFunc
         if(finished === true && /[\+\-\*\/]$/.test(fullFunc[fullFunc.length-2])){
             fullFunc = [];
             finished = false;
         }
         tempString += currKey;                      //temp number container for containing num>9
+        clear.textContent='C'
+        cleaned = false;
+
         console.log(tempString)
     }
     console.log(fullFunc);
@@ -72,49 +86,74 @@ function calculate(lst){                            //prior multiply and divide 
     }
 }
 
-const equal = document.querySelector('button.equal');
-equal.addEventListener('click',operate);
-
 function operate(){
     lst = fullFunc;
-    result = parseInt(lst[0]);
+    result = parseFloat(lst[0]);
 
 
     if(tempString!==''){                        //put tempstring into list because calculate function didn't do
         fullFunc.push(tempString);
         tempString='';
-        console.log(fullFunc);
+        console.log(tempString);
     }
     
+    if(lst.length >=3){
+        if(isNaN(parseFloat(lst[lst.length-1]))){     //remove if last input in list is not number
+            fullFunc.pop();
+        }
 
-    if(isNaN(parseInt(lst[lst.length-1]))){     //remove if last input in list is not number
-        fullFunc.pop();
-    }
-
-    for(let i=0;i<lst.length-1;i++){            //final calculation
-        if(lst.length>2){
-            if(lst[i+1]=='+'){
-                result = result + parseInt(lst[i+2]);
-            }
-            if(lst[i+1]=='-'){
-                result = result - parseInt(lst[i+2]);
-            }
-            if(lst[i+1]=='*'){
-                result = result * parseInt(lst[i+2]);     //additional multiply and divide prevent there is only 2 numbers
-            }
-            if(lst[i+1]=='/'){
-                result = result / parseInt(lst[i+2]);
+        for(let i=0;i<lst.length-1;i++){            //final calculation
+            if(lst.length>2){
+                if(lst[i+1]=='+'){
+                    result = result + parseFloat(lst[i+2]);
+                }
+                if(lst[i+1]=='-'){
+                    result = result - parseFloat(lst[i+2]);
+                }
+                if(lst[i+1]=='*'){
+                    result = result * parseFloat(lst[i+2]);     //additional multiply and divide prevent there is only 2 numbers
+                }
+                if(lst[i+1]=='/'){
+                    result = result / parseFloat(lst[i+2]);
+                }
             }
         }
+    
+        let nextFunc = [`${result}`, `${fullFunc[fullFunc.length-2]}`, `${fullFunc[fullFunc.length-1]}`];
+        fullFunc = nextFunc;                        //↑ continue last calculation
+        tempString = '';
+        
+        finished = true;
+        clear.textContent = 'AC'
+        cleaned = true;
+
+        console.log(result)
+        return result;
     }
-
-    let nextFunc = [`${result}`, `${fullFunc[fullFunc.length-2]}`, `${fullFunc[fullFunc.length-1]}`];
-    fullFunc = nextFunc;                        //↑ continue last calculation
-    tempString = '';
-    finished = true;
-
-    console.log(result)
-    return result;
 }
 
+function clean(){
+    if(cleaned===false){
+        tempString = '';
 
+        cleaned = true;
+    }
+    else{
+        tempString = '';
+        fullFunc = [];
+        nextFunc = [];
+        result = 0;
+        curr1 = 0;
+        curr2 = 0;
+        tempResult = 0;
+        finished = false;
+
+        cleaned = false;
+    }
+    clear.textContent = 'AC'
+}
+
+//a function for if 0000 in tempstring
+
+
+console.log(parseFloat('0.06').toFixed(5))

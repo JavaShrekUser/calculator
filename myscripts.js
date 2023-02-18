@@ -36,10 +36,6 @@ function saveKey(key){
     let currKey = key.target.className
 
     if(currKey === '+' || currKey === '-' || currKey === '*' || currKey === '/' || currKey === '%'){
-
-        if(isNaN(parseFloat(fullFunc[0]))){          //if lst[0] is not a number, remove it. Add not '='
-            fullFunc.pop(); 
-        }  
         
         if(tempString !==''){         
             fullFunc.push(tempString);              //if tempString is not empty, push it to fullFunc and reset tempString
@@ -47,6 +43,10 @@ function saveKey(key){
             isComma = false;
             calculate(fullFunc);
         }
+
+        if(isNaN(parseFloat(fullFunc[0]))){          //if lst[0] is not a number, remove it.
+            fullFunc.pop(); 
+        }  
         
         if(fullFunc.length >=2 && /[\+\-\*\%\/]$/.test(fullFunc)){
             fullFunc.pop();                         //if input signs multiple times, remove privous one
@@ -58,16 +58,33 @@ function saveKey(key){
             finished = false;
         }
 
+        isComma = false;
+        isNegative = false;
+
         fullFunc.push(`${currKey}`);
+
+        console.log(tempString)
+        console.log(fullFunc)
+
     }
     else if(!isNaN(parseFloat(currKey))){             //↓ if input a number after the answer, clean the fullFunc
         if(finished === true && /[\+\-\*\%\/]$/.test(fullFunc[fullFunc.length-2])){
             fullFunc = [];
             finished = false;
         }
-        tempString += currKey;                      //temp number container for containing num>9
+
+        if(isNaN(parseFloat(fullFunc[0]))){          //if lst[0] is not a number, remove it.
+            fullFunc.pop(); 
+        }  
+
+        if(tempString.length <= 14){
+            tempString += currKey;                      //temp number container for containing num>9
+        }
         clear.textContent='C'
         cleaned = false;
+
+        console.log(tempString)
+        console.log(fullFunc)
     }
 }
 
@@ -108,7 +125,9 @@ function operate(){
     if(tempString!==''){                        //put tempstring into list because calculate function didn't do
         fullFunc.push(tempString);  
         tempString='';
-        calculate(fullFunc);
+        if(fullFunc.length>=5){
+            calculate(fullFunc);
+        }
     }
     
     console.log(fullFunc)
@@ -147,7 +166,8 @@ function operate(){
         clear.textContent = 'AC'
         cleaned = true;
 
-        console.log(result.toString())              //remove 0
+        result = Math.round(result * 100000000) / 100000000
+        console.log(result)              //remove 0
         return result;
     }
 }
@@ -191,10 +211,10 @@ function addNegative(){
         isNegative = true;
     }
     else{
-
+        tempString = tempString.slice(1);
+        isNegative = false;
     }
 }
 
 //a function for if 0000 in tempstring
-
 

@@ -13,3 +13,62 @@ button{
     align-items: center;
     flex-wrap: wrap;
 }
+
+.container{
+    display: flex;
+    width:320px;
+    height: 100px;
+    background-color: blue;
+}
+
+.sign{
+    height: 100%;
+    width: 100%;
+    font-size: 32px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;  
+    box-sizing: border-box;
+    padding: 7px;
+
+    background-color: aquamarine;
+}
+
+.fullFunction{
+    height: 50%;
+    width: 100%;
+    font-size: 16px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;  
+    box-sizing: border-box;
+    padding: 7px;
+
+    background-color: antiquewhite;
+}
+
+.current{
+    height: 50%;
+    width: 100%;
+    font-size: 32px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;  
+    box-sizing: border-box;
+    padding: 7px;
+    
+    background-color: rgb(216, 248, 179);
+}
+
+.left{
+    display: flex;
+    height: 100%;
+    width: 30%;
+}
+
+.right{
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    width: 100%;
+}

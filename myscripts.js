@@ -1,6 +1,8 @@
 let fullFunc = [];
 let nextFunc = [];
+let showFunc = [];
 let tempString = '';
+let showString = '';
 let result = 0;
 let curr1 = 0;
 let curr2 = 0;
@@ -25,6 +27,9 @@ negative.addEventListener('click',addNegative);
 const point = document.querySelector('button.point');
 point.addEventListener('click',addPoint);
 
+const sign = document.querySelector('div.sign');
+const fullFunction = document.querySelector('div.fullFunction');
+const current = document.querySelector('div.current');
 
 
 const buttons = document.querySelectorAll('button');
@@ -36,6 +41,10 @@ function saveKey(key){
     let currKey = key.target.className
 
     if(currKey === '+' || currKey === '-' || currKey === '*' || currKey === '/' || currKey === '%'){
+
+        if(tempString == '' && fullFunc.length==0){
+            tempString = '0';
+        }
         
         if(tempString !==''){         
             fullFunc.push(tempString);              //if tempString is not empty, push it to fullFunc and reset tempString
@@ -62,6 +71,10 @@ function saveKey(key){
         isNegative = false;
 
         fullFunc.push(`${currKey}`);
+        fullFunction.textContent = fullFunc.join("");
+        sign.textContent = currKey;
+        current.textContent='0';
+
 
         console.log(tempString)
         console.log(fullFunc)
@@ -82,6 +95,7 @@ function saveKey(key){
         }
         clear.textContent='C'
         cleaned = false;
+        current.textContent=tempString;
 
         console.log(tempString)
         console.log(fullFunc)
@@ -121,7 +135,6 @@ function calculate(lst){                            //prior multiply and divide 
 function operate(){
     result = parseFloat(fullFunc[0]);
 
-
     if(tempString!==''){                        //put tempstring into list because calculate function didn't do
         fullFunc.push(tempString);  
         tempString='';
@@ -158,6 +171,7 @@ function operate(){
             }
         }
     
+        fullFunction.textContent = fullFunc.join("");
         let nextFunc = [`${result}`, `${fullFunc[fullFunc.length-2]}`, `${fullFunc[fullFunc.length-1]}`];
         fullFunc = nextFunc;                        //↑ continue last calculation
         tempString = '';
@@ -166,53 +180,70 @@ function operate(){
         clear.textContent = 'AC'
         cleaned = true;
 
-        result = Math.round(result * 100000000) / 100000000
-        console.log(result)              //remove 0
-        return result;
+        result = Math.round(result * 100000000) / 100000000;
+
+        current.textContent = result;
+        sign.textContent = '=';
     }
 }
 
 function clean(){
     if(cleaned===false){
         tempString = '';
-
         cleaned = true;
+        current.textContent = '0';
     }
     else{
-        tempString = '';
         fullFunc = [];
         nextFunc = [];
+        tempString = '';
         result = 0;
         curr1 = 0;
         curr2 = 0;
         tempResult = 0;
         finished = false;
-
         cleaned = false;
+        isComma = false;
+        isNegative = false;
+
+        fullFunction.textContent = '';
+        current.textContent = '0';
+        sign.textContent = '';
+
     }
     clear.textContent = 'AC'
 }
 
 function backspace(){
     tempString = tempString.slice(0, -1);
+    current.textContent=tempString;
     return tempString;
 }
 
-function addPoint(){                                //getting 5.99999999991 problem.
+function addPoint(){ 
     if(isComma == false){
         tempString = tempString + '.';
         isComma = true;
     }
+    current.textContent=tempString;
 }
 
 function addNegative(){
     if(isNegative == false){
         tempString = '-' + tempString;
-        isNegative = true;
+        isNegative = true; //搞一个tempFullFunc
     }
     else{
         tempString = tempString.slice(1);
         isNegative = false;
+    }
+    current.textContent=tempString;
+
+    if(tempString===''){
+        current.textContent='0';
+    }
+    else if(tempString==='-'){
+        current.textContent='-0';
     }
 }
 

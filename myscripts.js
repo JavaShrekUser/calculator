@@ -45,15 +45,19 @@ function saveKey(key){
         if(tempString == '' && fullFunc.length==0){
             tempString = '0';
         }
-        
-        if(tempString !==''){         
+
+        if(tempString !==''){   
+            if(tempString[0]=='-'){
+                tempString = `(${tempString})`
+            } 
+
             fullFunc.push(tempString);              //if tempString is not empty, push it to fullFunc and reset tempString
             tempString='';
             isComma = false;
             calculate(fullFunc);
         }
 
-        if(isNaN(parseFloat(fullFunc[0]))){          //if lst[0] is not a number, remove it.
+        if(isNaN(parseFloat(fullFunc[0].replace('(', '').replace(')', '')))){          //if lst[0] is not a number, remove it.
             fullFunc.pop(); 
         }  
         
@@ -61,7 +65,7 @@ function saveKey(key){
             fullFunc.pop();                         //if input signs multiple times, remove privous one
         }
 
-        if(finished==true){                         //if input next calculatoin base on answer, remove last two input from nextFunc
+        if(finished==true){                         //if input next calculation base on answer, remove last two input from nextFunc
             fullFunc.pop();
             fullFunc.pop();
             finished = false;
@@ -69,6 +73,8 @@ function saveKey(key){
 
         isComma = false;
         isNegative = false;
+        cleaned = true;
+        clear.textContent='AC'
 
         fullFunc.push(`${currKey}`);
         fullFunction.textContent = fullFunc.join("");
@@ -86,10 +92,6 @@ function saveKey(key){
             finished = false;
         }
 
-        if(isNaN(parseFloat(fullFunc[0]))){          //if lst[0] is not a number, remove it.
-            fullFunc.pop(); 
-        }  
-
         if(tempString.length <= 14){
             tempString += currKey;                      //temp number container for containing num>9
         }
@@ -105,27 +107,34 @@ function saveKey(key){
 function calculate(lst){                            //prior multiply and divide part
 
     if(lst.length>=3){
+
+        curr1 = lst[lst.length-3].replace('(', '').replace(')', '');
+        curr2 = lst[lst.length-1].replace('(', '').replace(')', '');
+            
         if(lst[lst.length-2]=='*'){
-            curr1 = lst[lst.length-3];
-            curr2 = lst[lst.length-1];
-            tempResult = curr1*curr2;
+            tempResult = `${curr1*curr2}`;
             lst = lst.slice(0,-3);
+            if(tempResult[0]=='-'){
+                tempResult = `(${tempResult})`
+            }
             lst.push(`${tempResult}`);
             fullFunc = lst;
         }
         else if(lst[lst.length-2]=='/'){
-            curr1 = lst[lst.length-3];
-            curr2 = lst[lst.length-1];
-            tempResult = curr1/curr2;
+            tempResult = `${curr1/curr2}`;
             lst = lst.slice(0,-3);
+            if(tempResult[0]=='-'){
+                tempResult = `(${tempResult})`
+            }
             lst.push(`${tempResult}`);
             fullFunc = lst;
         }
         else if(lst[lst.length-2]=='%'){
-            curr1 = lst[lst.length-3];
-            curr2 = lst[lst.length-1];
-            tempResult = curr1%curr2;
+            tempResult = `${curr1%curr2}`;
             lst = lst.slice(0,-3);
+            if(tempResult[0]=='-'){
+                tempResult = `(${tempResult})`
+            }
             lst.push(`${tempResult}`);
             fullFunc = lst;
         }
@@ -133,11 +142,17 @@ function calculate(lst){                            //prior multiply and divide 
 }
 
 function operate(){
-    result = parseFloat(fullFunc[0]);
+    result = parseFloat(fullFunc[0].replace('(', '').replace(')', ''));
 
     if(tempString!==''){                        //put tempstring into list because calculate function didn't do
+        
+        if(tempString[0]=='-'){
+            tempString = `(${tempString})`
+        } 
+
         fullFunc.push(tempString);  
         tempString='';
+
         if(fullFunc.length>=5){
             calculate(fullFunc);
         }
@@ -146,32 +161,34 @@ function operate(){
     console.log(fullFunc)
 
     if(fullFunc.length >=3){
-        if(isNaN(parseFloat(fullFunc[fullFunc.length-1]))){     //remove if last input in list is not number
+        if(isNaN(parseFloat(fullFunc[fullFunc.length-1])) && fullFunc[fullFunc.length-1][0] !=='('){     //remove if last input in list is not number
             fullFunc.pop();
         }
+        console.log('yes'+ fullFunc.length)
+        console.log('yes'+ fullFunc)
 
         for(let i=0;i<fullFunc.length-1;i++){            //final calculation
-
             if(fullFunc.length>2){
                 if(fullFunc[i+1]=='+'){
-                    result = result + parseFloat(fullFunc[i+2]);
+                    result = result + parseFloat(fullFunc[i+2].replace('(', '').replace(')', ''));
                 }
                 if(fullFunc[i+1]=='-'){
-                    result = result - parseFloat(fullFunc[i+2]);
+                    result = result - parseFloat(fullFunc[i+2].replace('(', '').replace(')', ''));
                 }
                 if(fullFunc[i+1]=='*'){
-                    result = result * parseFloat(fullFunc[i+2]);     //additional multiply and divide prevent there is only 2 numbers
+                    result = result * parseFloat(fullFunc[i+2].replace('(', '').replace(')', ''));
                 }
                 if(fullFunc[i+1]=='/'){
-                    result = result / parseFloat(fullFunc[i+2]);
+                    result = result / parseFloat(fullFunc[i+2].replace('(', '').replace(')', ''));
                 }
                 if(fullFunc[i+1]=='%'){
-                    result = result % parseFloat(fullFunc[i+2]);
+                    result = result % parseFloat(fullFunc[i+2].replace('(', '').replace(')', ''));
                 }
             }
         }
     
         fullFunction.textContent = fullFunc.join("");
+
         let nextFunc = [`${result}`, `${fullFunc[fullFunc.length-2]}`, `${fullFunc[fullFunc.length-1]}`];
         fullFunc = nextFunc;                        //↑ continue last calculation
         tempString = '';
@@ -230,7 +247,7 @@ function addPoint(){
 
 function addNegative(){
     if(isNegative == false){
-        tempString = '-' + tempString;
+        tempString = '-'+tempString;
         isNegative = true; //搞一个tempFullFunc
     }
     else{
@@ -249,3 +266,6 @@ function addNegative(){
 
 //a function for if 0000 in tempstring
 
+var str = '-2';
+var num = parseFloat(str.replace('(', '').replace(')', ''));
+console.log(num); // 输出 -2

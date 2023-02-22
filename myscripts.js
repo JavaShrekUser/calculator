@@ -40,7 +40,7 @@ buttons.forEach(button => {
 function saveKey(key){
     let currKey = key.target.className
 
-    if(currKey === '+' || currKey === '-' || currKey === '*' || currKey === '/' || currKey === '%'){
+    if(currKey === '+' || currKey === '-' || currKey === 'x' || currKey === '÷' || currKey === '%'){
 
         if(tempString == '' && fullFunc.length==0){
             tempString = '0';
@@ -61,7 +61,7 @@ function saveKey(key){
             fullFunc.pop(); 
         }  
         
-        if(fullFunc.length >=2 && /[\+\-\*\%\/]$/.test(fullFunc)){
+        if(fullFunc.length >=2 && /[\+\-\x\%\÷]$/.test(fullFunc)){
             fullFunc.pop();                         //if input signs multiple times, remove privous one
         }
 
@@ -87,7 +87,7 @@ function saveKey(key){
 
     }
     else if(!isNaN(parseFloat(currKey))){             //↓ if input a number after the answer, clean the fullFunc
-        if(finished === true && /[\+\-\*\%\/]$/.test(fullFunc[fullFunc.length-2])){
+        if(finished === true && /[\+\-\x\%\÷]$/.test(fullFunc[fullFunc.length-2])){
             fullFunc = [];
             finished = false;
         }
@@ -111,7 +111,7 @@ function calculate(lst){                            //prior multiply and divide 
         curr1 = lst[lst.length-3].replace('(', '').replace(')', '');
         curr2 = lst[lst.length-1].replace('(', '').replace(')', '');
             
-        if(lst[lst.length-2]=='*'){
+        if(lst[lst.length-2]=='x'){
             tempResult = `${curr1*curr2}`;
             lst = lst.slice(0,-3);
             if(tempResult[0]=='-'){
@@ -120,7 +120,7 @@ function calculate(lst){                            //prior multiply and divide 
             lst.push(`${tempResult}`);
             fullFunc = lst;
         }
-        else if(lst[lst.length-2]=='/'){
+        else if(lst[lst.length-2]=='÷'){
             tempResult = `${curr1/curr2}`;
             lst = lst.slice(0,-3);
             if(tempResult[0]=='-'){
@@ -175,10 +175,10 @@ function operate(){
                 if(fullFunc[i+1]=='-'){
                     result = result - parseFloat(fullFunc[i+2].replace('(', '').replace(')', ''));
                 }
-                if(fullFunc[i+1]=='*'){
+                if(fullFunc[i+1]=='x'){
                     result = result * parseFloat(fullFunc[i+2].replace('(', '').replace(')', ''));
                 }
-                if(fullFunc[i+1]=='/'){
+                if(fullFunc[i+1]=='÷'){
                     result = result / parseFloat(fullFunc[i+2].replace('(', '').replace(')', ''));
                 }
                 if(fullFunc[i+1]=='%'){
@@ -248,7 +248,7 @@ function addPoint(){
 function addNegative(){
     if(isNegative == false){
         tempString = '-'+tempString;
-        isNegative = true; //搞一个tempFullFunc
+        isNegative = true;
     }
     else{
         tempString = tempString.slice(1);
@@ -263,9 +263,3 @@ function addNegative(){
         current.textContent='-0';
     }
 }
-
-//a function for if 0000 in tempstring
-
-var str = '-2';
-var num = parseFloat(str.replace('(', '').replace(')', ''));
-console.log(num); // 输出 -2
